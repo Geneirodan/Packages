@@ -9,20 +9,53 @@ on:
   pull_request:
     branches: [ "main", "dev" ]
 
-jobs:
+jobs:    
   build:
-
     runs-on: ubuntu-latest
-
+    
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+          
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3
+        with:
+          versionSpec: 5.x
+
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v3
+        id: gitversion
+
+      - name: Display GitVersion outputs
+        run: |
+          echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
+          echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+
+      - name: Pack NuGet packages
+        run: dotnet pack -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
+          
+      - name: Prep packages
+        run: |
+          dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
+            --name Github \
+            --username Geneirodan \
+            --password ${{ secrets.PACKAGES_TOKEN }} \
+            --store-password-in-clear-text
+  
+      - name: Push package to GitHub packages
+        run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.PACKAGES_TOKEN }}  --source "Github"
