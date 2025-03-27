@@ -4,7 +4,6 @@
         <OutputType>Library</OutputType>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Geneirodan</Authors>
         <RepositoryUrl>https://github.com/Geneirodan/Packages</RepositoryUrl>
         <DocumentationFile>Documentation.xml</DocumentationFile>
