@@ -12,9 +12,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Src\Geneirodan.EntityFrameworkCore\Geneirodan.EntityFrameworkCore.csproj" />
+      <ProjectReference Include="..\..\Src\Geneirodan.MediatR\Geneirodan.MediatR.csproj" />
+      <ProjectReference Include="..\..\Src\Geneirodan.Observability\Geneirodan.Observability.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />
     </ItemGroup>
 
