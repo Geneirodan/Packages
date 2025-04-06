@@ -1,0 +1,50 @@
+﻿using Geneirodan.Abstractions.Domain;
+using Geneirodan.MediatR.Behaviors;
+using Geneirodan.SampleApi.Application.Commands;
+using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using Serilog.Events;
+using Serilog.Sinks.TestCorrelator;
+using Shouldly;
+
+namespace Geneirodan.MediatR.Tests.Behaviors;
+
+[TestSubject(typeof(LoggingPreProcessor<>))]
+public sealed class LoggingPreProcessorTests(ApiFactory factory) : PipelineTest(factory)
+{
+    [Fact]
+    public async Task Send_ShouldLogRequest()
+    {
+        using (TestCorrelator.CreateContext())
+        {
+            var command = new Command(false);
+            await Sender.Send(command);
+            var events = TestCorrelator.GetLogEventsFromCurrentContext();
+            var entry = events.FirstOrDefault(x => x.MessageTemplate.Text == "Processing {RequestName}");
+            entry.ShouldNotBeNull();
+            entry.Properties.ShouldContainKeyAndValue("RequestName", new ScalarValue(nameof(Command)));
+            entry.Properties.ShouldContainKey("Request");
+            entry.Properties["Request"].ToString().ShouldBeEquivalentTo("Command { ShouldFail: False }");
+        }
+    }
+
+    [Fact]
+    public async Task Send_ShouldLogRequestWithUserId()
+    {
+        var userId = Guid.NewGuid();
+        Scope.ServiceProvider.GetRequiredService<Mock<IUser>>().Setup(x => x.Id).Returns(userId);
+        using (TestCorrelator.CreateContext())
+        {
+            var command = new Command(false);
+            await Sender.Send(command);
+            var events = TestCorrelator.GetLogEventsFromCurrentContext();
+            var entry = events.FirstOrDefault(x => x.MessageTemplate.Text == "Processing {RequestName} with user {UserId}");
+            entry.ShouldNotBeNull();
+            entry.Properties.ShouldContainKeyAndValue("RequestName", new ScalarValue(nameof(Command)));
+            entry.Properties.ShouldContainKeyAndValue("UserId", new ScalarValue(userId));
+            entry.Properties.ShouldContainKey("Request");
+            entry.Properties["Request"].ToString().ShouldBeEquivalentTo("Command { ShouldFail: False }");
+        }
+    }
+}

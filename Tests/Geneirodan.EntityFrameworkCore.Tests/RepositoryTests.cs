@@ -1,4 +1,5 @@
 ﻿using Geneirodan.Abstractions.Repositories;
+using Geneirodan.SampleApi;
 using Geneirodan.SampleApi.Domain;
 using Geneirodan.SampleApi.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -8,13 +9,13 @@ using Shouldly;
 
 namespace Geneirodan.EntityFrameworkCore.Tests;
 
-public sealed class RepositoryTests : IClassFixture<WebApplicationFactory<Program>>, IDisposable
+public sealed class RepositoryTests : IClassFixture<WebApplicationFactory<IApiMarker>>, IDisposable
 {
     private readonly IRepository<DomainEntity, int> _repository;
     private readonly DbContext _context;
     private readonly IServiceScope _scope;
 
-    public RepositoryTests(WebApplicationFactory<Program> factory)
+    public RepositoryTests(WebApplicationFactory<IApiMarker> factory)
     {
         _scope = factory.Services.CreateScope();
         _repository = _scope.ServiceProvider.GetRequiredService<IRepository<DomainEntity, int>>();
