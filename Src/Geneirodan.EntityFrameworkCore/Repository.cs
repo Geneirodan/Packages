@@ -43,7 +43,7 @@ public class Repository<TEntity, TKey, TEfEntity>(
     /// The DbSet representing the collection of <typeparamref name="TEfEntity"/> entities in the context.
     /// </summary>
     // ReSharper disable once MemberCanBePrivate.Global
-    protected readonly DbSet<TEfEntity> Set = context.Set<TEfEntity>();
+    protected DbSet<TEfEntity> Set => context.Set<TEfEntity>();
 
     /// <inheritdoc/>
     public virtual async Task<TEntity?> FindAsync(TKey id, CancellationToken token = default)
@@ -57,18 +57,18 @@ public class Repository<TEntity, TKey, TEfEntity>(
     public virtual async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var efEntity = entityMapper.Map(entity);
-        var dbEntity = Set.Add(efEntity);
+        Set.Add(efEntity);
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        return reverseEntityMapper.Map(dbEntity.Entity);
+        return reverseEntityMapper.Map(efEntity);
     }
 
     /// <inheritdoc/>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var efEntity = entityMapper.Map(entity);
-        var dbEntity = Set.Update(efEntity);
+        Set.Update(efEntity);
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        return reverseEntityMapper.Map(dbEntity.Entity);
+        return reverseEntityMapper.Map(efEntity);
     }
 
     /// <inheritdoc/>
