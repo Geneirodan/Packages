@@ -1,5 +1,6 @@
 ﻿using Geneirodan.Abstractions.Domain;
 using Geneirodan.SampleApi;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@ using Serilog;
 
 namespace Geneirodan.MediatR.Tests;
 
+[UsedImplicitly]
 public sealed class ApiFactory : WebApplicationFactory<IApiMarker>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)

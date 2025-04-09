@@ -30,7 +30,7 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(IUser user) : IPi
         var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>().ToArray();
 
         if (authorizeAttributes.Length == 0)
-            return await next().ConfigureAwait(false);
+            return await next(cancellationToken).ConfigureAwait(false);
 
         if (user.Id is null)
             return DynamicResults.Unauthorized<TResponse>();
@@ -39,14 +39,14 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(IUser user) : IPi
             authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles)).ToArray();
 
         if (authorizeAttributesWithRoles.Length == 0)
-            return await next().ConfigureAwait(false);
+            return await next(cancellationToken).ConfigureAwait(false);
 
         var authorized = authorizeAttributesWithRoles
             .SelectMany(a => a.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             .Any(user.IsInRole);
 
         return authorized
-            ? await next().ConfigureAwait(false)
+            ? await next(cancellationToken).ConfigureAwait(false)
             : DynamicResults.Forbidden<TResponse>();
     }
 }

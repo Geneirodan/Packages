@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Geneirodan.MediatR.Behaviors;
 using Geneirodan.MediatR.Options;
+using JetBrains.Annotations;
 using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,7 @@ namespace Geneirodan.MediatR;
 /// <summary>
 /// Provides extension methods for registering MediatR pipeline behaviors and options in the <see cref="IServiceCollection"/>.
 /// </summary>
+[PublicAPI]
 public static class DependencyInjection
 {
     /// <summary>

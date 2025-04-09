@@ -22,7 +22,7 @@ public sealed partial class UnhandledExceptionBehavior<TRequest, TResponse>(ILog
     {
         try
         {
-            return await next().ConfigureAwait(false);
+            return await next(cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

@@ -1,6 +1,7 @@
 ﻿using Geneirodan.Abstractions.Domain;
 using Geneirodan.Abstractions.Mapping;
 using Geneirodan.Abstractions.Repositories;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Geneirodan.EntityFrameworkCore;
@@ -29,6 +30,7 @@ namespace Geneirodan.EntityFrameworkCore;
 /// <typeparam name="TEfEntity">
 /// The type of the entity that is used by Entity Framework (typically a database entity).
 /// </typeparam>
+[PublicAPI]
 public class Repository<TEntity, TKey, TEfEntity>(
     DbContext context, 
     IEntityMapper<TEntity, TEfEntity> entityMapper,
@@ -42,7 +44,6 @@ public class Repository<TEntity, TKey, TEfEntity>(
     /// <summary>
     /// The DbSet representing the collection of <typeparamref name="TEfEntity"/> entities in the context.
     /// </summary>
-    // ReSharper disable once MemberCanBePrivate.Global
     protected DbSet<TEfEntity> Set => context.Set<TEfEntity>();
 
     /// <inheritdoc/>

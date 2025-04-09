@@ -28,14 +28,14 @@ public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidat
     )
     {
         if (!validators.Any())
-            return await next().ConfigureAwait(false);
+            return await next(cancellationToken).ConfigureAwait(false);
 
         var context = new ValidationContext<TRequest>(request);
         var validationTasks = validators.Select(v => v.ValidateAsync(context, cancellationToken));
         var validationResults = await Task.WhenAll(validationTasks).ConfigureAwait(false);
 
         if (validationResults.All(x => x.IsValid))
-            return await next().ConfigureAwait(false);
+            return await next(cancellationToken).ConfigureAwait(false);
 
         var errors = validationResults.SelectMany(x => x.AsErrors()).ToArray();
 

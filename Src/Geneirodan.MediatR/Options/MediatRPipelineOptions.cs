@@ -1,9 +1,12 @@
+using JetBrains.Annotations;
+
 namespace Geneirodan.MediatR.Options;
 
 /// <summary>
 /// Represents configuration options for controlling which pipeline behaviors are enabled or disabled
 /// in the MediatR request processing pipeline.
 /// </summary>
+[PublicAPI]
 public sealed record MediatRPipelineOptions
 {
     /// <summary>

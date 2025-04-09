@@ -1,8 +1,11 @@
-﻿namespace Geneirodan.Observability;
+﻿using JetBrains.Annotations;
+
+namespace Geneirodan.Observability;
 
 /// <summary>
 /// Represents the settings for OpenTelemetry configuration.
 /// </summary>
+[PublicAPI]
 public sealed record OpenTelemetrySettings
 {
     /// <summary>
@@ -38,7 +41,7 @@ public sealed record OpenTelemetrySettings
         /// <summary>
         /// Gets or sets an array of meters to track for metrics collection.
         /// </summary>
-        public string[] Meters { get; init; } = [];
+        public required string[] Meters { get; init; }
     }
 
     /// <summary>

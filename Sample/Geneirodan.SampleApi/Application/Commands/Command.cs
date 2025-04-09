@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using FluentValidation;
 using Geneirodan.MediatR.Abstractions;
+using JetBrains.Annotations;
 using MediatR;
 
 namespace Geneirodan.SampleApi.Application.Commands;
@@ -22,6 +23,7 @@ public sealed record ValidatedCommand(string Email) : ICommand
             Task.FromResult(Result.Success());
     }
 
+    [UsedImplicitly]
     public sealed class Validator : AbstractValidator<ValidatedCommand>
     {
         public Validator()

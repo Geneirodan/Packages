@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+
 namespace Geneirodan.Abstractions.Repositories;
 
 /// <summary>
@@ -6,6 +8,7 @@ namespace Geneirodan.Abstractions.Repositories;
 /// <typeparam name="T">
 /// The type of items contained in the paginated result.
 /// </typeparam>
+[PublicAPI]
 public record PageModel<T>
 {
     /// <summary>

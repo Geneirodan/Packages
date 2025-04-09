@@ -1,10 +1,12 @@
 ﻿using Geneirodan.Abstractions.Mapping;
+using JetBrains.Annotations;
 
 namespace Geneirodan.EntityFrameworkCore;
 
 /// <summary>
 /// Provides extension methods for mapping entities or collections of entities.
 /// </summary>
+[PublicAPI]
 public static class MappingExtensions
 {
     /// <summary>

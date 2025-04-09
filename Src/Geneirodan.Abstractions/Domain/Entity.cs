@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+
 namespace Geneirodan.Abstractions.Domain;
 
 /// <summary>
@@ -7,6 +9,7 @@ namespace Geneirodan.Abstractions.Domain;
 /// <typeparam name="TKey">
 /// <inheritdoc/>
 /// </typeparam>
+[PublicAPI]
 public abstract class Entity<TKey> : IEntity<TKey> 
     where TKey : IEquatable<TKey>
 {

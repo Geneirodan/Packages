@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +17,7 @@ namespace Geneirodan.Observability;
 /// <summary>
 /// A static class for registering and configuring observability-related services, such as OpenTelemetry and Serilog.
 /// </summary>
+[PublicAPI]
 public static class DependencyInjection
 {
     private const string OtelEndpointName = "OTEL_EXPORTER_OTLP_ENDPOINT";
