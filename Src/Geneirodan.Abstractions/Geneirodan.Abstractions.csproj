@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2025.1.0-eap1" />
+    <PackageReference Include="JetBrains.Annotations"/>
+    <PackageReference Remove="GitVersion.MsBuild" />
   </ItemGroup>
 </Project>
