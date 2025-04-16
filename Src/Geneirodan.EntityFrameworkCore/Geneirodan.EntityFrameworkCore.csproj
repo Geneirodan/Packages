@@ -1,12 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-      <ProjectReference Include="..\Geneirodan.Abstractions\Geneirodan.Abstractions.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2025.1.0-eap1" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\Geneirodan.Abstractions\Geneirodan.Abstractions.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+    <PackageReference Remove="GitVersion.MsBuild" />
+  </ItemGroup>
 </Project>

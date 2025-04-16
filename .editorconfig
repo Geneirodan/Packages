@@ -57,7 +57,7 @@ resharper_web_config_type_not_resolved_highlighting = warning
 resharper_web_config_wrong_module_highlighting = warning
 configure_await_analysis_mode = library
 
-[*.{yaml,yml}]
+[*.{yaml,yml,csproj,props}]
 indent_size = 2
 tab_width = 2
 
