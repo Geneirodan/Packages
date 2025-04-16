@@ -6,11 +6,6 @@
         <Nullable>enable</Nullable>
         <Authors>Geneirodan</Authors>
         <RepositoryUrl>https://github.com/Geneirodan/Packages</RepositoryUrl>
-        <DocumentationFile>Documentation.xml</DocumentationFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
-    <ItemGroup>
-        <None Include="Documentation.xml" Pack="true">
-        <PackageCopyToOutput>true</PackageCopyToOutput>
-    </None>
-</ItemGroup>
 </Project>
