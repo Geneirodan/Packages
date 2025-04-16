@@ -8,4 +8,9 @@
         <RepositoryUrl>https://github.com/Geneirodan/Packages</RepositoryUrl>
         <DocumentationFile>Documentation.xml</DocumentationFile>
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="Documentation.xml" Pack="true">
+        <PackageCopyToOutput>true</PackageCopyToOutput>
+    </None>
+</ItemGroup>
 </Project>
