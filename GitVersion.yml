@@ -1,4 +1,8 @@
 workflow: GitFlow/v1
 branches:
   main:
+    increment: Minor
     is-release-branch: true
+  develop:
+    increment: Patch
+mode: ContinuousDeployment
