@@ -6,6 +6,8 @@
     <File Path="nuget.config" />
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
+    <File Path="GitVersion.yml" />
+    <File Path=".github\workflows\dotnet.yml" />
   </Folder>
   <Folder Name="/Src/">
     <Project Path="Src\Geneirodan.Abstractions\Geneirodan.Abstractions.csproj" Type="Classic C#" />
