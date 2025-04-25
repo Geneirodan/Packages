@@ -7,5 +7,6 @@
     <Authors>Geneirodan</Authors>
     <RepositoryUrl>https://github.com/Geneirodan/Packages</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <VersionPrefix>1.0.2</VersionPrefix>
   </PropertyGroup>
 </Project>

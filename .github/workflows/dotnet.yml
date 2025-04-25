@@ -20,23 +20,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
-          
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v3
-        with:
-          versionSpec: '6.0.x'
-          preferLatestVersion: true
-
-      - name: Determine Version
-        uses: gittools/actions/gitversion/execute@v3
-        id: gitversion
-        with:
-          useConfigFile: true
-
-      - name: Display GitVersion outputs
-        run: |
-          echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
-          echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
 
       - name: Restore dependencies
         run: dotnet restore
@@ -47,8 +30,13 @@ jobs:
       - name: Test
         run: dotnet test --no-build --verbosity normal -c Release
 
-      - name: Pack NuGet packages
-        run: dotnet pack -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
+      - name: Pack NuGet packages (main)
+        if: github.ref == 'refs/heads/main'
+        run: dotnet pack -c Release
+        
+      - name: Pack NuGet packages (dev)
+        if: github.ref == 'refs/heads/dev'
+        run: dotnet pack -p:VersionSuffix='beta' -c Release
           
       - name: Prep packages
         run: |
