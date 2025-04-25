@@ -6,7 +6,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     <PackageReference Include="Microsoft.Extensions.Telemetry.Abstractions"/>
     <PackageReference Include="Serilog"/>
-    <PackageReference Remove="GitVersion.MsBuild" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Geneirodan.Abstractions\Geneirodan.Abstractions.csproj"/>
