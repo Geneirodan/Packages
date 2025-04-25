@@ -1,3 +1,4 @@
+workflow: GitFlow/v1
 mode: ContinuousDelivery
 # Conventional Commits https://www.conventionalcommits.org/en/v1.0.0/
 # https://regex101.com/r/Ms7Vx6/2
