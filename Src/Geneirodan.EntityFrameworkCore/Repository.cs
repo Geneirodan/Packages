@@ -52,7 +52,7 @@ public class Repository<TEntity, TKey, TEfEntity>(
     /// <inheritdoc cref="IRepository{TEntity,TKey}.FindAsync"/>
     protected virtual async Task<TEntity?> FindAsync(IQueryable<TEfEntity> entities, TKey id, CancellationToken token)
     {
-        var queryable = entities.Where(e => e.Id.Equals(id));
+        var queryable = entities.AsNoTracking().Where(e => e.Id.Equals(id));
         var entity = await queryable.FirstOrDefaultAsync(token).ConfigureAwait(false);
         return entity is not null ? reverseEntityMapper.Map(entity) : default;
     }
