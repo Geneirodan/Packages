@@ -7,7 +7,7 @@ using Microsoft.OpenApi.Models;
 namespace Geneirodan.AspNetCore;
 
 /// <summary>
-///     Represents a transformer that can be used to modify an OpenAPI document to add JWT bearer security schema.
+/// Represents a transformer that can be used to modify an OpenAPI document to add JWT bearer security schema.
 /// </summary>
 [PublicAPI]
 public sealed class JwtBearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider)

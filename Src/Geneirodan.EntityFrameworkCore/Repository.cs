@@ -32,10 +32,10 @@ namespace Geneirodan.EntityFrameworkCore;
 /// </typeparam>
 [PublicAPI]
 public class Repository<TEntity, TKey, TEfEntity>(
-    DbContext context, 
+    DbContext context,
     IEntityMapper<TEntity, TEfEntity> entityMapper,
     IEntityMapper<TEfEntity, TEntity> reverseEntityMapper
-    )
+)
     : IRepository<TEntity, TKey>
     where TEntity : IEntity<TKey>
     where TKey : IEquatable<TKey>
@@ -47,9 +47,12 @@ public class Repository<TEntity, TKey, TEfEntity>(
     protected DbSet<TEfEntity> Set => context.Set<TEfEntity>();
 
     /// <inheritdoc/>
-    public virtual async Task<TEntity?> FindAsync(TKey id, CancellationToken token = default)
+    public virtual Task<TEntity?> FindAsync(TKey id, CancellationToken token = default) => FindAsync(Set, id, token);
+
+    /// <inheritdoc cref="IRepository{TEntity,TKey}.FindAsync"/>
+    protected virtual async Task<TEntity?> FindAsync(IQueryable<TEfEntity> entities, TKey id, CancellationToken token)
     {
-        var queryable = Set.AsNoTracking().Where(e => e.Id.Equals(id));
+        var queryable = entities.AsNoTracking().Where(e => e.Id.Equals(id));
         var entity = await queryable.FirstOrDefaultAsync(token).ConfigureAwait(false);
         return entity is not null ? reverseEntityMapper.Map(entity) : default;
     }
