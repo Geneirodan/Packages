@@ -41,7 +41,7 @@ public static class DependencyInjection
 
         var settings = services
             .AddOptions<OpenTelemetrySettings>()
-            .Bind(configuration.GetSection(sectionName))
+            .BindConfiguration(sectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart()
             .Services
