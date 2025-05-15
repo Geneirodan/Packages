@@ -70,6 +70,7 @@ public class Repository<TEntity, TKey, TEfEntity>(
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var efEntity = entityMapper.Map(entity);
+        context.Attach(efEntity);
         Set.Update(efEntity);
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         return reverseEntityMapper.Map(efEntity);
@@ -79,6 +80,7 @@ public class Repository<TEntity, TKey, TEfEntity>(
     public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var efEntity = entityMapper.Map(entity);
+        context.Attach(efEntity);
         Set.Remove(efEntity);
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
