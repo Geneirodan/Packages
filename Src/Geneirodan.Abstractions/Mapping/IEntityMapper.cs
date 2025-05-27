@@ -11,6 +11,5 @@ namespace Geneirodan.Abstractions.Mapping;
 /// <typeparam name="TDestination">
 /// <inheritdoc cref="IMapper{TSource,TDestination}"/>
 /// </typeparam>
-public interface IEntityMapper<in TSource, out TDestination> 
-    : IMapper<TSource, TDestination>,
-        IMapper<IQueryable<TSource>, IQueryable<TDestination>>;
+public interface IEntityMapper<in TSource, out TDestination>
+    : IMapper<TSource, TDestination>, IMapper<IQueryable<TSource>, IQueryable<TDestination>>;

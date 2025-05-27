@@ -36,7 +36,7 @@ jobs:
         
       - name: Pack NuGet packages (dev)
         if: github.ref == 'refs/heads/dev'
-        run: dotnet pack -p:VersionSuffix='beta' -c Release
+        run: dotnet pack -p:VersionSuffix='beta.${{ github.run_number }}' -c Release
           
       - name: Prep packages
         run: |

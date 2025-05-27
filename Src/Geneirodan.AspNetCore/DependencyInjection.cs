@@ -16,10 +16,14 @@ public static class DependencyInjection
     /// Adds JWT authentication services to the <see cref="IServiceCollection"/> using a specified metadata address.
     /// </summary>
     /// <param name="services">The service collection to add the authentication services to.</param>
-    /// <param name="metadataAddress">The metadata address for the JWT bearer token configuration.</param>
+    /// <param name="sectionName">The section name for the JWT bearer token configuration.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with JWT authentication configured.</returns>
-    public static IServiceCollection AddJwtAuth(this IServiceCollection services, string metadataAddress)
+    public static IServiceCollection AddJwtAuth(this IServiceCollection services, string sectionName = "JwtAuth")
     {
+        services.AddOptions<JwtBearerOptions>()
+            .BindConfiguration("Jwt")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
         services
             .AddAuthentication(options =>
             {
@@ -27,11 +31,7 @@ public static class DependencyInjection
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(options =>
-            {
-                options.MetadataAddress = metadataAddress;
-                options.TokenValidationParameters = new TokenValidationParameters { ClockSkew = TimeSpan.Zero };
-            });
+            .AddJwtBearer();
 
         return services;
     }
