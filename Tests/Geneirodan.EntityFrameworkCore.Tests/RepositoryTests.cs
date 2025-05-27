@@ -32,6 +32,19 @@ public sealed class RepositoryTests : IClassFixture<WebApplicationFactory<IApiMa
         result.Id.ShouldBe(1);
         result.Name.ShouldBe("Entity1");
     }
+    
+    [Fact]
+    public async Task ExistsAsync_ReturnsTrue_WhenEntityExists()
+    {
+        var result = await _repository.ExistsAsync(1);
+        result.ShouldBeTrue();
+    }
+    [Fact]
+    public async Task ExistsAsync_ReturnsFalse_WhenEntityDoesNotExists()
+    {
+        var result = await _repository.ExistsAsync(128);
+        result.ShouldBeFalse();
+    }
 
     [Fact]
     public async Task AddAsync_AddsEntityAndReturnsMappedEntity()
