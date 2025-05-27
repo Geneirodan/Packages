@@ -49,6 +49,10 @@ public class Repository<TEntity, TKey, TEfEntity>(
     /// <inheritdoc/>
     public virtual Task<TEntity?> FindAsync(TKey id, CancellationToken token = default) => FindAsync(Set, id, token);
 
+    /// <inheritdoc/>
+    public Task<bool> ExistsAsync(TKey id, CancellationToken token = default) => 
+        Set.Where(e => e.Id.Equals(id)).AnyAsync(token);
+
     /// <inheritdoc cref="IRepository{TEntity,TKey}.FindAsync"/>
     protected virtual async Task<TEntity?> FindAsync(IQueryable<TEfEntity> entities, TKey id, CancellationToken token)
     {
