@@ -26,7 +26,7 @@ public sealed class RepositoryTests : IClassFixture<WebApplicationFactory<IApiMa
     public async Task FindAsync_ReturnsMappedEntity_WhenEntityExists()
     {
 
-        var result = await _repository.FindAsync(1);
+        var result = await _repository.FindAsync(1, TestContext.Current.CancellationToken);
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(1);
@@ -36,13 +36,13 @@ public sealed class RepositoryTests : IClassFixture<WebApplicationFactory<IApiMa
     [Fact]
     public async Task ExistsAsync_ReturnsTrue_WhenEntityExists()
     {
-        var result = await _repository.ExistsAsync(1);
+        var result = await _repository.ExistsAsync(1, TestContext.Current.CancellationToken);
         result.ShouldBeTrue();
     }
     [Fact]
     public async Task ExistsAsync_ReturnsFalse_WhenEntityDoesNotExists()
     {
-        var result = await _repository.ExistsAsync(128);
+        var result = await _repository.ExistsAsync(128, TestContext.Current.CancellationToken);
         result.ShouldBeFalse();
     }
 
@@ -51,11 +51,11 @@ public sealed class RepositoryTests : IClassFixture<WebApplicationFactory<IApiMa
     {
         var domainEntity = new DomainEntity { Id = 5, Name = "Entity5" };
 
-        var result = await _repository.AddAsync(domainEntity);
+        var result = await _repository.AddAsync(domainEntity, TestContext.Current.CancellationToken);
 
         result.ShouldNotBeNull();
         result.ShouldBeEquivalentTo(domainEntity);
-        var entity = await _repository.FindAsync(domainEntity.Id);
+        var entity = await _repository.FindAsync(domainEntity.Id, TestContext.Current.CancellationToken);
         entity.ShouldNotBeNull();
     }
 
@@ -64,7 +64,7 @@ public sealed class RepositoryTests : IClassFixture<WebApplicationFactory<IApiMa
     {
         var domainEntity = new DomainEntity { Id = 3, Name = "NewName" };
 
-        var result = await _repository.UpdateAsync(domainEntity);
+        var result = await _repository.UpdateAsync(domainEntity, TestContext.Current.CancellationToken);
 
         result.ShouldNotBeNull();
         result.ShouldBeEquivalentTo(domainEntity);
@@ -75,8 +75,8 @@ public sealed class RepositoryTests : IClassFixture<WebApplicationFactory<IApiMa
     {
         var domainEntity = new DomainEntity { Id = 4, Name = "Entity4" };
         
-        await _repository.DeleteAsync(domainEntity);
-        var result = await _context.Set<EfEntity>().FirstOrDefaultAsync(x => x.Id == domainEntity.Id);
+        await _repository.DeleteAsync(domainEntity, TestContext.Current.CancellationToken);
+        var result = await _context.Set<EfEntity>().FirstOrDefaultAsync(x => x.Id == domainEntity.Id, cancellationToken: TestContext.Current.CancellationToken);
         result.ShouldBeNull();
     }
 
