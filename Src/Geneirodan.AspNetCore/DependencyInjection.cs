@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Geneirodan.AspNetCore;
 
@@ -20,8 +19,8 @@ public static class DependencyInjection
     /// <returns>The updated <see cref="IServiceCollection"/> with JWT authentication configured.</returns>
     public static IServiceCollection AddJwtAuth(this IServiceCollection services, string sectionName = "JwtAuth")
     {
-        services.AddOptions<JwtBearerOptions>()
-            .BindConfiguration("Jwt")
+        services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+            .BindConfiguration(sectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
         services
