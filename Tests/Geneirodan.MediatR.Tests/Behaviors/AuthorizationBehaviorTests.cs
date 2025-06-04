@@ -23,7 +23,7 @@ public sealed class AuthorizationBehaviorTests : PipelineTest
         _userMock.Setup(x => x.Id).Returns(null as Guid?);
         _userMock.Setup(x => x.IsInRole(It.IsAny<string>())).Returns(false);
         var command = new AuthorizedCommand(false);
-        var result = await Sender.Send(command);
+        var result = await Sender.Send(command, TestContext.Current.CancellationToken);
         result.Status.ShouldBe(ResultStatus.Unauthorized);
     }
 
@@ -33,7 +33,7 @@ public sealed class AuthorizationBehaviorTests : PipelineTest
         _userMock.Setup(x => x.Id).Returns(Guid.NewGuid());
         _userMock.Setup(x => x.IsInRole(It.IsAny<string>())).Returns(false);
         var command = new AdminCommand(false);
-        var result = await Sender.Send(command);
+        var result = await Sender.Send(command, TestContext.Current.CancellationToken);
         result.Status.ShouldBe(ResultStatus.Forbidden);
     }
 
@@ -43,7 +43,7 @@ public sealed class AuthorizationBehaviorTests : PipelineTest
         _userMock.Setup(x => x.Id).Returns(null as Guid?);
         _userMock.Setup(x => x.IsInRole(It.IsAny<string>())).Returns(false);
         var command = new Command(false);
-        var result = await Sender.Send(command);
+        var result = await Sender.Send(command, TestContext.Current.CancellationToken);
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 
@@ -53,7 +53,7 @@ public sealed class AuthorizationBehaviorTests : PipelineTest
         _userMock.Setup(x => x.Id).Returns(Guid.NewGuid());
         _userMock.Setup(x => x.IsInRole(It.IsAny<string>())).Returns(false);
         var command = new AuthorizedCommand(false);
-        var result = await Sender.Send(command);
+        var result = await Sender.Send(command, TestContext.Current.CancellationToken);
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 
@@ -63,7 +63,7 @@ public sealed class AuthorizationBehaviorTests : PipelineTest
         _userMock.Setup(x => x.Id).Returns(Guid.NewGuid());
         _userMock.Setup(x => x.IsInRole("Admin")).Returns(true);
         var command = new AdminCommand(false);
-        var result = await Sender.Send(command);
+        var result = await Sender.Send(command, TestContext.Current.CancellationToken);
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 }
