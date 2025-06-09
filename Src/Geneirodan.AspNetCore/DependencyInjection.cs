@@ -20,7 +20,7 @@ public static class DependencyInjection
     /// <returns>The updated <see cref="IServiceCollection"/> with JWT authentication configured.</returns>
     public static IServiceCollection AddJwtAuth(
         this IServiceCollection services, 
-        Action<JwtBearerOptions> configureOptions,
+        Action<JwtBearerOptions>? configureOptions = null,
         string sectionName = "JwtAuth"
         )
     {
@@ -28,14 +28,18 @@ public static class DependencyInjection
             .BindConfiguration(sectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
-        services
+        var authenticationBuilder = services
             .AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(configureOptions);
+            });
+        
+        if (configureOptions is null)
+            authenticationBuilder.AddJwtBearer();
+        else
+            authenticationBuilder.AddJwtBearer(configureOptions);
 
         return services;
     }
