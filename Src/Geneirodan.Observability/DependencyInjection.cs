@@ -100,7 +100,10 @@ public static class DependencyInjection
                         c.Endpoint = builder.Configuration[OtelEndpointName];
                         c.Protocol = OtlpProtocol.Grpc;
                         c.IncludedData = TraceIdField | SpanIdField | SourceContextAttribute;
-                        c.ResourceAttributes = new Dictionary<string, object> { { "service.name", serviceName } };
+                        c.ResourceAttributes = new Dictionary<string, object>(StringComparer.Ordinal)
+                        {
+                            { "service.name", serviceName }
+                        };
                     }
                 ));
 

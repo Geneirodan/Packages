@@ -27,10 +27,10 @@ public interface IRepository<TEntity, in TKey>
     /// </param>
     /// <returns>
     /// A task that represents the asynchronous operation.<br/>
-    /// The task result is the entity with the specified identifier, or <c>null</c> if no entity is found.
+    /// The task result is the entity with the specified identifier, or <see langword="null"/> if no entity is found.
     /// </returns>
     Task<TEntity?> FindAsync(TKey id, CancellationToken token = default);
-    
+
     /// <summary>
     /// Asynchronously determines whether an entity with the specified identifier exists.
     /// </summary>
@@ -42,7 +42,7 @@ public interface IRepository<TEntity, in TKey>
     /// </param>
     /// <returns>
     /// A task that represents the asynchronous operation.<br/>
-    /// The task result is <c>true</c> if an entity with the specified identifier exists; otherwise, <c>false</c>.
+    /// The task result is <see langword="true"/> if an entity with the specified identifier exists; otherwise, <see langword="false"/>.
     /// </returns>
     Task<bool> ExistsAsync(TKey id, CancellationToken token = default);
 

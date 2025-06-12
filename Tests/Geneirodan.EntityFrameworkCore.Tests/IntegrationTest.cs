@@ -1,9 +1,7 @@
-﻿using Geneirodan.Abstractions.Repositories;
-using Geneirodan.SampleApi;
+﻿using Geneirodan.SampleApi;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Geneirodan.EntityFrameworkCore.Tests;
 

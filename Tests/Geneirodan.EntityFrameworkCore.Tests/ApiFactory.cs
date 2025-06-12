@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
 
 namespace Geneirodan.EntityFrameworkCore.Tests;
@@ -29,7 +28,7 @@ public sealed class ApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifeti
     }
 
     public async ValueTask InitializeAsync() =>
-        await _postgres.StartAsync();
+        await _postgres.StartAsync(TestContext.Current.CancellationToken);
 
     public override async ValueTask DisposeAsync()
     {

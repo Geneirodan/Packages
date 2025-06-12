@@ -20,5 +20,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="xunit.v3" Version="2.0.2" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.201" />
   </ItemGroup>
 </Project>

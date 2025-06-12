@@ -43,10 +43,14 @@ public sealed class JwtBearerSecuritySchemeTransformer(IAuthenticationSchemeProv
     )
     {
         var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync().ConfigureAwait(false);
-        if (authenticationSchemes.Any(authScheme => authScheme.Name == JwtBearerDefaults.AuthenticationScheme))
+        if (authenticationSchemes.Any(authScheme => string.Equals(
+                a: authScheme.Name,
+                b: JwtBearerDefaults.AuthenticationScheme,
+                comparisonType: StringComparison.Ordinal
+            )))
         {
             document.Components ??= new OpenApiComponents();
-            document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
+            document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>(StringComparer.Ordinal)
             {
                 [JwtBearerDefaults.AuthenticationScheme] = OpenApiSecurityScheme
             };

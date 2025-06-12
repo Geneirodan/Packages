@@ -18,10 +18,14 @@ public sealed class LoggingPreProcessorTests(ApiFactory factory) : PipelineTest(
     {
         using (TestCorrelator.CreateContext())
         {
-            var command = new Command(false);
+            var command = new Command(ShouldFail: false);
             await Sender.Send(command, TestContext.Current.CancellationToken);
             var events = TestCorrelator.GetLogEventsFromCurrentContext();
-            var entry = events.FirstOrDefault(x => x.MessageTemplate.Text == "Processing {RequestName}");
+            var entry = events.FirstOrDefault(x => string.Equals(
+                a: x.MessageTemplate.Text,
+                b: "Processing {RequestName}",
+                comparisonType: StringComparison.Ordinal
+            ));
             entry.ShouldNotBeNull();
             entry.Properties.ShouldContainKeyAndValue("RequestName", new ScalarValue(nameof(Command)));
             entry.Properties.ShouldContainKey("Request");
@@ -36,11 +40,14 @@ public sealed class LoggingPreProcessorTests(ApiFactory factory) : PipelineTest(
         {
             var userId = Guid.NewGuid();
             Scope.ServiceProvider.GetRequiredService<Mock<IUser>>().Setup(x => x.Id).Returns(userId);
-            var command = new Command(false);
+            var command = new Command(ShouldFail: false);
             await Sender.Send(command, TestContext.Current.CancellationToken);
             var events = TestCorrelator.GetLogEventsFromCurrentContext();
-            var entry = events.FirstOrDefault(x =>
-                x.MessageTemplate.Text == "Processing {RequestName} with user {UserId}");
+            var entry = events.FirstOrDefault(x => string.Equals(
+                a: x.MessageTemplate.Text,
+                b: "Processing {RequestName} with user {UserId}",
+                comparisonType: StringComparison.Ordinal
+            ));
             entry.ShouldNotBeNull();
             entry.Properties.ShouldContainKeyAndValue("RequestName", new ScalarValue(nameof(Command)));
             entry.Properties.ShouldContainKeyAndValue("UserId", new ScalarValue(userId));

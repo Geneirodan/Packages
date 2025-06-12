@@ -1,8 +1,6 @@
 ﻿using Geneirodan.Abstractions.Repositories;
-using Geneirodan.SampleApi;
 using Geneirodan.SampleApi.Domain;
 using Geneirodan.SampleApi.Persistence;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -207,6 +205,6 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         Context.Set<DomainEntity>().RemoveRange(Context.Set<DomainEntity>());
-        await Context.SaveChangesAsync();
+        await Context.SaveChangesAsync(TestContext.Current.CancellationToken);
     }
 }
