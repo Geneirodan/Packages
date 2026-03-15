@@ -1,28 +1,42 @@
-﻿using Ardalis.Result;
+using Ardalis.Result;
 using FluentValidation;
 using Geneirodan.MediatR.Abstractions;
+using Geneirodan.MediatR.Behaviors;
 using JetBrains.Annotations;
 using MediatR;
 
 namespace Geneirodan.SampleApi.Application.Commands;
 
+/// <summary>
+/// Sample command used by tests and documentation to exercise the MediatR pipeline and exception handling.
+/// </summary>
+/// <param name="ShouldFail">When <see langword="true"/>, the handler throws; otherwise returns success.</param>
 public sealed record Command(bool ShouldFail) : ICommand
 {
+    /// <inheritdoc/>
     public sealed class Handler : IRequestHandler<Command, Result>
     {
+        /// <inheritdoc/>
         public Task<Result> Handle(Command request, CancellationToken cancellationToken) =>
             Task.FromResult(request.ShouldFail ? throw new Exception("SomeSortOfError") : Result.Success());
     }
 }
 
+/// <summary>
+/// Sample command that demonstrates FluentValidation before the handler runs.
+/// </summary>
+/// <param name="Email">The email to validate; must be non-empty and a valid email address format.</param>
 public sealed record ValidatedCommand(string Email) : ICommand
 {
+    /// <inheritdoc/>
     public sealed class Handler : IRequestHandler<ValidatedCommand, Result>
     {
+        /// <inheritdoc/>
         public Task<Result> Handle(ValidatedCommand request, CancellationToken cancellationToken) =>
             Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     [UsedImplicitly]
     public sealed class Validator : AbstractValidator<ValidatedCommand>
     {
