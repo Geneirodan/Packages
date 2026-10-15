@@ -11,7 +11,6 @@ using Serilog;
 using Serilog.Sinks.OpenTelemetry;
 using static Serilog.Sinks.OpenTelemetry.IncludedData;
 
-
 namespace Geneirodan.Observability;
 
 /// <summary>
@@ -29,7 +28,6 @@ public static class DependencyInjection
     /// <param name="configuration">The configuration instance containing the OpenTelemetry settings.</param>
     /// <param name="sectionName">The section name in the configuration to bind OpenTelemetry settings. Defaults to "OpenTelemetry".</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with OpenTelemetry services added.</returns>
-
     public static IServiceCollection AddSharedOpenTelemetry(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -44,8 +42,7 @@ public static class DependencyInjection
             .BindConfiguration(sectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart()
-            .Services
-            .BuildServiceProvider()
+            .Services.BuildServiceProvider()
             .GetRequiredService<IOptions<OpenTelemetrySettings>>()
             .Value;
 
@@ -88,24 +85,25 @@ public static class DependencyInjection
     public static IHostApplicationBuilder AddSerilog(this IHostApplicationBuilder builder)
     {
         var serviceName = builder.Configuration.GetServiceName();
-        builder.Services.AddSerilog((sp, serilog) =>
-            serilog
-                .ReadFrom.Configuration(builder.Configuration)
-                .ReadFrom.Services(sp)
-                .Enrich.FromLogContext()
-                .Enrich.WithProperty("ApplicationName", serviceName)
-                .WriteTo.Console()
-                .WriteTo.OpenTelemetry(c =>
+        builder.Services.AddSerilog(
+            (sp, serilog) =>
+                serilog
+                    .ReadFrom.Configuration(builder.Configuration)
+                    .ReadFrom.Services(sp)
+                    .Enrich.FromLogContext()
+                    .Enrich.WithProperty("ApplicationName", serviceName)
+                    .WriteTo.Console()
+                    .WriteTo.OpenTelemetry(c =>
                     {
                         c.Endpoint = builder.Configuration[OtelEndpointName];
                         c.Protocol = OtlpProtocol.Grpc;
                         c.IncludedData = TraceIdField | SpanIdField | SourceContextAttribute;
                         c.ResourceAttributes = new Dictionary<string, object>(StringComparer.Ordinal)
                         {
-                            { "service.name", serviceName }
+                            { "service.name", serviceName },
                         };
-                    }
-                ));
+                    })
+        );
 
         return builder;
     }

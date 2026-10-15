@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace Geneirodan.Abstractions.Repositories;
+﻿namespace Geneirodan.Abstractions.Repositories;
 
 /// <summary>
 /// Defines an interface for unit-of-work pattern, managing transactions and saving changes.

@@ -1,6 +1,4 @@
-﻿using Ardalis.Result;
-
-namespace Geneirodan.MediatR;
+﻿namespace Geneirodan.Mediator;
 
 /// <summary>
 /// Provides utility methods to create dynamic results of type <see cref="Result"/> or <see cref="Result{T}"/>.
@@ -16,7 +14,8 @@ public static class DynamicResults
     /// <exception cref="MissingMethodException">Thrown if the required method is not found on the result type.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the result type is not
     /// <see cref="Result"/> or <see cref="Result{T}"/>.</exception>
-    public static T Error<T>(ErrorList? errors = null) where T : class, IResult
+    public static T Error<T>(ErrorList? errors = null)
+        where T : class, IResult
     {
         var type = typeof(T);
         const string methodName = nameof(Result.Error);
@@ -39,7 +38,8 @@ public static class DynamicResults
     /// <exception cref="MissingMethodException">Thrown if the required method is not found on the result type.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the result type is not
     /// <see cref="Result"/> or <see cref="Result{T}"/>.</exception>
-    public static T Invalid<T>(ValidationError[] errors) where T : class, IResult
+    public static T Invalid<T>(ValidationError[] errors)
+        where T : class, IResult
     {
         var type = typeof(T);
         const string methodName = nameof(Result.Invalid);
@@ -61,7 +61,8 @@ public static class DynamicResults
     /// <exception cref="MissingMethodException">Thrown if the required method is not found on the result type.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the result type is not
     /// <see cref="Result"/> or <see cref="Result{T}"/>.</exception>
-    public static T Forbidden<T>() where T : class, IResult
+    public static T Forbidden<T>()
+        where T : class, IResult
     {
         var type = typeof(T);
         const string methodName = nameof(Result.Forbidden);
@@ -83,7 +84,8 @@ public static class DynamicResults
     /// <exception cref="MissingMethodException">Thrown if the required method is not found on the result type.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the result type is not
     /// <see cref="Result"/> or <see cref="Result{T}"/>.</exception>
-    public static T Unauthorized<T>() where T : class, IResult
+    public static T Unauthorized<T>()
+        where T : class, IResult
     {
         var type = typeof(T);
         const string methodName = nameof(Result.Unauthorized);
@@ -111,8 +113,8 @@ public static class DynamicResults
         where T : class, IResult =>
         type.GetGenericTypeDefinition()
             .MakeGenericType(type.GetGenericArguments())
-            .GetMethod(methodName, types)?
-            .Invoke(null, parameters) as T
+            .GetMethod(methodName, types)
+            ?.Invoke(null, parameters) as T
         ?? throw new MissingMethodException(type.Name, methodName);
 
     /// <summary>

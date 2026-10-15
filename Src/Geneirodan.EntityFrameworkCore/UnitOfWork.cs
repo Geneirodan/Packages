@@ -17,7 +17,6 @@ public class UnitOfWork(DbContext context) : IUnitOfWork
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-
     /// <inheritdoc cref="IDbContextTransaction"/>
     /// <remarks />
     public class Transaction(IDbContextTransaction dbContextTransaction) : ITransaction

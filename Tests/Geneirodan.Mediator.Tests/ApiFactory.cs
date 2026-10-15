@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Serilog;
 
-namespace Geneirodan.MediatR.Tests;
+namespace Geneirodan.Mediator.Tests;
 
 [UsedImplicitly]
 public sealed class ApiFactory : WebApplicationFactory<IApiMarker>
@@ -18,10 +18,7 @@ public sealed class ApiFactory : WebApplicationFactory<IApiMarker>
         {
             services.AddScoped<Mock<IUser>>(_ => new Mock<IUser>());
             services.AddScoped<IUser>(x => x.GetRequiredService<Mock<IUser>>().Object);
-            services.AddSerilog((_, serilog) =>
-                serilog
-                    .Enrich.FromLogContext()
-                    .WriteTo.TestCorrelator());
+            services.AddSerilog((_, serilog) => serilog.Enrich.FromLogContext().WriteTo.TestCorrelator());
         });
         base.ConfigureWebHost(builder);
     }

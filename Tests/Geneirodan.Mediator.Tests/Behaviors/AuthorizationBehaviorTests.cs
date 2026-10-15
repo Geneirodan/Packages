@@ -1,21 +1,21 @@
 ﻿using Ardalis.Result;
 using Geneirodan.Abstractions.Domain;
-using Geneirodan.MediatR.Behaviors;
+using Geneirodan.Mediator.Behaviors;
 using Geneirodan.SampleApi.Application.Commands;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Shouldly;
 
-namespace Geneirodan.MediatR.Tests.Behaviors;
+namespace Geneirodan.Mediator.Tests.Behaviors;
 
 [TestSubject(typeof(AuthorizationBehavior<,>))]
 public sealed class AuthorizationBehaviorTests : PipelineTest
 {
     private readonly Mock<IUser> _userMock;
 
-    public AuthorizationBehaviorTests(ApiFactory factory) : base(factory) => 
-        _userMock = Scope.ServiceProvider.GetRequiredService<Mock<IUser>>();
+    public AuthorizationBehaviorTests(ApiFactory factory)
+        : base(factory) => _userMock = Scope.ServiceProvider.GetRequiredService<Mock<IUser>>();
 
     [Fact]
     public async Task Send_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()

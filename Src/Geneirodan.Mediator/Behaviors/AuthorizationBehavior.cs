@@ -1,9 +1,8 @@
 using System.Reflection;
-using Ardalis.Result;
 using Geneirodan.Abstractions.Domain;
-using Geneirodan.MediatR.Attributes;
+using Geneirodan.Mediator.Attributes;
 
-namespace Geneirodan.MediatR.Behaviors;
+namespace Geneirodan.Mediator.Behaviors;
 
 /// <summary>
 /// A pipeline behavior that handles authorization logic for incoming requests.
@@ -17,36 +16,37 @@ namespace Geneirodan.MediatR.Behaviors;
 /// The type of the response that will be returned after handling the request. This type must be a <see cref="Result"/>.
 /// </typeparam>
 public sealed class AuthorizationBehavior<TRequest, TResponse>(IUser user) : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
-    where TResponse : Result
+    where TRequest : IMessage
+    where TResponse : class, IResult
 {
     /// <inheritdoc/>
-    public async Task<TResponse> Handle(
-        TRequest request,
-        RequestHandlerDelegate<TResponse> next,
+    public async ValueTask<TResponse> Handle(
+        TRequest message,
+        MessageHandlerDelegate<TRequest, TResponse> next,
         CancellationToken cancellationToken
     )
     {
-        var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>().ToArray();
+        var authorizeAttributes = message.GetType().GetCustomAttributes<AuthorizeAttribute>().ToArray();
 
         if (authorizeAttributes.Length == 0)
-            return await next(cancellationToken).ConfigureAwait(false);
+            return await next(message, cancellationToken).ConfigureAwait(false);
 
         if (user.Id == Guid.Empty)
             return DynamicResults.Unauthorized<TResponse>();
 
-        var authorizeAttributesWithRoles =
-            authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles)).ToArray();
+        var authorizeAttributesWithRoles = authorizeAttributes
+            .Where(a => !string.IsNullOrWhiteSpace(a.Roles))
+            .ToArray();
 
         if (authorizeAttributesWithRoles.Length == 0)
-            return await next(cancellationToken).ConfigureAwait(false);
+            return await next(message, cancellationToken).ConfigureAwait(false);
 
         var authorized = authorizeAttributesWithRoles
             .SelectMany(a => a.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             .Any(user.IsInRole);
 
         return authorized
-            ? await next(cancellationToken).ConfigureAwait(false)
+            ? await next(message, cancellationToken).ConfigureAwait(false)
             : DynamicResults.Forbidden<TResponse>();
     }
 }
