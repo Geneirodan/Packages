@@ -5,10 +5,10 @@ namespace Geneirodan.Abstractions.Domain;
 /// This interface is typically used to represent domain entities with a unique identifier.
 /// </summary>
 /// <typeparam name="TKey">
-/// The type of the identifier for the entity. It must implement <see cref="IEquatable{TKey}"/> to support 
+/// The type of the identifier for the entity. It must implement <see cref="IEquatable{TKey}"/> to support
 /// equality comparisons for determining if two entity identifiers are equal.
 /// </typeparam>
-public interface IEntity<out TKey> 
+public interface IEntity<out TKey>
     where TKey : IEquatable<TKey>
 {
     /// <summary>

@@ -19,8 +19,7 @@ namespace Geneirodan.EntityFrameworkCore;
 /// The type of the primary key of the entity. It must implement <see cref="IEquatable{TKey}"/>.
 /// </typeparam>
 [PublicAPI]
-public class Repository<TEntity, TKey>(DbContext context)
-    : IRepository<TEntity, TKey>
+public class Repository<TEntity, TKey>(DbContext context) : IRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>
     where TKey : IEquatable<TKey>
 {
@@ -33,22 +32,22 @@ public class Repository<TEntity, TKey>(DbContext context)
     public virtual Task<TEntity?> FindAsync(TKey id, CancellationToken token = default) => FindAsync(Set, id, token);
 
     /// <inheritdoc/>
-    public Task<bool> ExistsAsync(TKey id, CancellationToken token = default) => 
+    public Task<bool> ExistsAsync(TKey id, CancellationToken token = default) =>
         Set.AnyAsync(e => e.Id.Equals(id), token);
 
     /// <inheritdoc cref="IRepository{TEntity,TKey}.FindAsync"/>
-    protected virtual async Task<TEntity?> FindAsync(IQueryable<TEntity> entities, TKey id, CancellationToken token) => 
-        await entities.FirstOrDefaultAsync(e => e.Id.Equals(id),token).ConfigureAwait(false);
+    protected virtual async Task<TEntity?> FindAsync(IQueryable<TEntity> entities, TKey id, CancellationToken token) =>
+        await entities.FirstOrDefaultAsync(e => e.Id.Equals(id), token).ConfigureAwait(false);
 
     /// <inheritdoc/>
-    public virtual Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default) => 
+    public virtual Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default) =>
         Task.FromResult(Set.Add(entity).Entity);
 
     /// <inheritdoc/>
-    public virtual Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default) => 
+    public virtual Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default) =>
         Task.FromResult(Set.Update(entity).Entity);
 
     /// <inheritdoc/>
-    public virtual Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default) => 
+    public virtual Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default) =>
         Task.FromResult(Set.Remove(entity));
 }

@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result;
-using Geneirodan.MediatR.Behaviors;
+using Geneirodan.Mediator.Behaviors;
 using Geneirodan.SampleApi.Application.Commands;
 using JetBrains.Annotations;
 using Shouldly;
 
-namespace Geneirodan.MediatR.Tests.Behaviors;
+namespace Geneirodan.Mediator.Tests.Behaviors;
 
 [TestSubject(typeof(ValidationBehavior<,>))]
 public class ValidationBehaviorTests(ApiFactory factory) : PipelineTest(factory)

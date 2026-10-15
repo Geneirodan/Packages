@@ -18,7 +18,7 @@ public abstract class IntegrationTest : IClassFixture<ApiFactory>, IDisposable
     protected IServiceScope Scope;
     protected DbContext Context;
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Scope.Dispose();
         GC.SuppressFinalize(this);

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Geneirodan.AspNetCore;
 
@@ -18,21 +18,12 @@ public sealed class JwtBearerSecuritySchemeTransformer(IAuthenticationSchemeProv
         Type = SecuritySchemeType.Http,
         Scheme = JwtBearerDefaults.AuthenticationScheme,
         In = ParameterLocation.Header,
-        BearerFormat = "Json Web Token"
+        BearerFormat = "Json Web Token",
     };
 
     private static readonly OpenApiSecurityRequirement Requirement = new()
     {
-        [
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
-            }
-        ] = []
+        [new OpenApiSecuritySchemeReference(referenceId: JwtBearerDefaults.AuthenticationScheme)] = [],
     };
 
     /// <inheritdoc />
@@ -43,20 +34,24 @@ public sealed class JwtBearerSecuritySchemeTransformer(IAuthenticationSchemeProv
     )
     {
         var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync().ConfigureAwait(false);
-        if (authenticationSchemes.Any(authScheme => string.Equals(
-                a: authScheme.Name,
-                b: JwtBearerDefaults.AuthenticationScheme,
-                comparisonType: StringComparison.Ordinal
-            )))
+        if (
+            authenticationSchemes.Any(authScheme =>
+                string.Equals(
+                    a: authScheme.Name,
+                    b: JwtBearerDefaults.AuthenticationScheme,
+                    comparisonType: StringComparison.Ordinal
+                )
+            )
+        )
         {
             document.Components ??= new OpenApiComponents();
-            document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>(StringComparer.Ordinal)
+            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>(StringComparer.Ordinal)
             {
-                [JwtBearerDefaults.AuthenticationScheme] = OpenApiSecurityScheme
+                [JwtBearerDefaults.AuthenticationScheme] = OpenApiSecurityScheme,
             };
 
-            foreach (var operation in document.Paths.Values.SelectMany(path => path.Operations))
-                operation.Value.Security.Add(Requirement);
+            foreach (var operation in document.Paths.Values.SelectMany(path => path.Operations ?? []))
+                operation.Value.Security?.Add(Requirement);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Geneirodan.AspNetCore;
 /// into an ASP.NET Core <see cref="Microsoft.AspNetCore.Http.IResult"/>.
 /// </summary>
 [PublicAPI]
-public static class ResultConverter 
+public static class ResultConverter
 {
     /// <summary>
     /// Maps the given <see cref="Ardalis.Result.IResult"/>
@@ -20,21 +20,22 @@ public static class ResultConverter
     /// <param name="result">The <see cref="Ardalis.Result.IResult"/> to map.</param>
     /// <returns>An <see cref="Microsoft.AspNetCore.Http.IResult"/> representing the HTTP response.</returns>
     /// <exception cref="NotSupportedException">Thrown when the result status is not supported.</exception>
-    public static Microsoft.AspNetCore.Http.IResult MapResult(this IResult result) => result.Status switch
-    {
-        ResultStatus.Ok => result is Result ? TypedResults.Ok() : TypedResults.Ok(result.GetValue()),
-        ResultStatus.Created => TypedResults.Created(result.Location, result.GetValue()),
-        ResultStatus.NoContent => TypedResults.NoContent(),
-        ResultStatus.NotFound => Error(result, StatusCodes.Status404NotFound),
-        ResultStatus.Unauthorized => Error(result, StatusCodes.Status401Unauthorized),
-        ResultStatus.Forbidden => Error(result, StatusCodes.Status403Forbidden),
-        ResultStatus.Invalid => ValidationError(result.ValidationErrors),
-        ResultStatus.Error => Error(result, StatusCodes.Status422UnprocessableEntity),
-        ResultStatus.Conflict => Error(result, StatusCodes.Status409Conflict),
-        ResultStatus.Unavailable => Error(result, StatusCodes.Status503ServiceUnavailable),
-        ResultStatus.CriticalError => Error(result, StatusCodes.Status500InternalServerError),
-        _ => throw new NotSupportedException($"Result {result.Status} conversion is not supported.")
-    };
+    public static Microsoft.AspNetCore.Http.IResult MapResult(this IResult result) =>
+        result.Status switch
+        {
+            ResultStatus.Ok => result is Result ? TypedResults.Ok() : TypedResults.Ok(result.GetValue()),
+            ResultStatus.Created => TypedResults.Created(result.Location, result.GetValue()),
+            ResultStatus.NoContent => TypedResults.NoContent(),
+            ResultStatus.NotFound => Error(result, StatusCodes.Status404NotFound),
+            ResultStatus.Unauthorized => Error(result, StatusCodes.Status401Unauthorized),
+            ResultStatus.Forbidden => Error(result, StatusCodes.Status403Forbidden),
+            ResultStatus.Invalid => ValidationError(result.ValidationErrors),
+            ResultStatus.Error => Error(result, StatusCodes.Status422UnprocessableEntity),
+            ResultStatus.Conflict => Error(result, StatusCodes.Status409Conflict),
+            ResultStatus.Unavailable => Error(result, StatusCodes.Status503ServiceUnavailable),
+            ResultStatus.CriticalError => Error(result, StatusCodes.Status500InternalServerError),
+            _ => throw new NotSupportedException($"Result {result.Status} conversion is not supported."),
+        };
 
     /// <summary>
     /// Converts a collection of validation errors into a <see cref="ValidationProblem"/> response.
@@ -60,6 +61,6 @@ public static class ResultConverter
         var extensions = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
         if (result.Errors.Any())
             extensions.TryAdd("errors", result.Errors);
-        return TypedResults.Problem(statusCode:statusCode, extensions: extensions);
+        return TypedResults.Problem(statusCode: statusCode, extensions: extensions);
     }
 }

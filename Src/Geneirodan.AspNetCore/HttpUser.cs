@@ -22,4 +22,3 @@ public sealed class HttpUser(IHttpContextAccessor httpContextAccessor) : IUser
         }
     }
 }
-

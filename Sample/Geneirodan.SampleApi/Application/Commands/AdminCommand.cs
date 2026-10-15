@@ -1,16 +1,13 @@
-using Ardalis.Result;
-using Geneirodan.MediatR.Abstractions;
-using Geneirodan.MediatR.Attributes;
-using MediatR;
+using Geneirodan.Mediator.Attributes;
 
 namespace Geneirodan.SampleApi.Application.Commands;
 
 [Authorize(Roles = "Admin")]
-public sealed record AdminCommand(bool ShouldFail) : ICommand
+public sealed record AdminCommand(bool ShouldFail) : ICommand<Result>
 {
-    public sealed class Handler : IRequestHandler<AdminCommand, Result>
+    public sealed class Handler : ICommandHandler<AdminCommand, Result>
     {
-        public Task<Result> Handle(AdminCommand request, CancellationToken cancellationToken) => 
-            Task.FromResult(request.ShouldFail ? Result.Error("SomeSortOfError") : Result.Success());
+        public ValueTask<Result> Handle(AdminCommand request, CancellationToken cancellationToken) =>
+            ValueTask.FromResult(request.ShouldFail ? Result.Error("SomeSortOfError") : Result.Success());
     }
 }

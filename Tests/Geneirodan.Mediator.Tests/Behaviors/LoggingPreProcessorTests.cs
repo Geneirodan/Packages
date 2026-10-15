@@ -1,5 +1,6 @@
-﻿using Geneirodan.Abstractions.Domain;
-using Geneirodan.MediatR.Behaviors;
+﻿using System.Globalization;
+using Geneirodan.Abstractions.Domain;
+using Geneirodan.Mediator.Behaviors;
 using Geneirodan.SampleApi.Application.Commands;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,9 +9,9 @@ using Serilog.Events;
 using Serilog.Sinks.TestCorrelator;
 using Shouldly;
 
-namespace Geneirodan.MediatR.Tests.Behaviors;
+namespace Geneirodan.Mediator.Tests.Behaviors;
 
-[TestSubject(typeof(LoggingPreProcessor<>))]
+[TestSubject(typeof(LoggingPreProcessor<,>))]
 public sealed class LoggingPreProcessorTests(ApiFactory factory) : PipelineTest(factory)
 {
     [Fact]
@@ -21,15 +22,20 @@ public sealed class LoggingPreProcessorTests(ApiFactory factory) : PipelineTest(
             var command = new Command(ShouldFail: false);
             await Sender.Send(command, TestContext.Current.CancellationToken);
             var events = TestCorrelator.GetLogEventsFromCurrentContext();
-            var entry = events.FirstOrDefault(x => string.Equals(
-                a: x.MessageTemplate.Text,
-                b: "Processing {RequestName}",
-                comparisonType: StringComparison.Ordinal
-            ));
+            var entry = events.FirstOrDefault(x =>
+                string.Equals(
+                    a: x.MessageTemplate.Text,
+                    b: "Processing {RequestName}",
+                    comparisonType: StringComparison.Ordinal
+                )
+            );
             entry.ShouldNotBeNull();
             entry.Properties.ShouldContainKeyAndValue("RequestName", new ScalarValue(nameof(Command)));
             entry.Properties.ShouldContainKey("Request");
-            entry.Properties["Request"].ToString().ShouldBeEquivalentTo("Command { ShouldFail: False }");
+            entry
+                .Properties["Request"]
+                .ToString(format: null, CultureInfo.InvariantCulture)
+                .ShouldBeEquivalentTo("Command { ShouldFail: False }");
         }
     }
 
@@ -43,16 +49,21 @@ public sealed class LoggingPreProcessorTests(ApiFactory factory) : PipelineTest(
             var command = new Command(ShouldFail: false);
             await Sender.Send(command, TestContext.Current.CancellationToken);
             var events = TestCorrelator.GetLogEventsFromCurrentContext();
-            var entry = events.FirstOrDefault(x => string.Equals(
-                a: x.MessageTemplate.Text,
-                b: "Processing {RequestName} with user {UserId}",
-                comparisonType: StringComparison.Ordinal
-            ));
+            var entry = events.FirstOrDefault(x =>
+                string.Equals(
+                    a: x.MessageTemplate.Text,
+                    b: "Processing {RequestName} with user {UserId}",
+                    comparisonType: StringComparison.Ordinal
+                )
+            );
             entry.ShouldNotBeNull();
             entry.Properties.ShouldContainKeyAndValue("RequestName", new ScalarValue(nameof(Command)));
             entry.Properties.ShouldContainKeyAndValue("UserId", new ScalarValue(userId));
             entry.Properties.ShouldContainKey("Request");
-            entry.Properties["Request"].ToString().ShouldBeEquivalentTo("Command { ShouldFail: False }");
+            entry
+                .Properties["Request"]
+                .ToString(format: null, CultureInfo.InvariantCulture)
+                .ShouldBeEquivalentTo("Command { ShouldFail: False }");
         }
     }
 }

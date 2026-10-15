@@ -19,23 +19,23 @@ public static class DependencyInjection
     /// <param name="sectionName">The section name for the JWT bearer token configuration.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with JWT authentication configured.</returns>
     public static IServiceCollection AddJwtAuth(
-        this IServiceCollection services, 
+        this IServiceCollection services,
         Action<JwtBearerOptions>? configureOptions = null,
         string sectionName = "JwtAuth"
-        )
+    )
     {
-        services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+        services
+            .AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
             .BindConfiguration(sectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
-        var authenticationBuilder = services
-            .AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            });
-        
+        var authenticationBuilder = services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        });
+
         if (configureOptions is null)
             authenticationBuilder.AddJwtBearer();
         else
@@ -50,9 +50,7 @@ public static class DependencyInjection
     /// <param name="services">The service collection to add the user services to.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with HTTP user service added.</returns>
     public static IServiceCollection AddHttpUser(this IServiceCollection services) =>
-        services
-            .AddHttpContextAccessor()
-            .AddScoped<IUser, HttpUser>();
+        services.AddHttpContextAccessor().AddScoped<IUser, HttpUser>();
 
     /// <summary>
     /// Adds web localization services to the <see cref="IServiceCollection"/>.
@@ -60,12 +58,15 @@ public static class DependencyInjection
     /// <param name="services">The service collection to add the localization services to.</param>
     /// <param name="supportedCultures">A list of supported cultures for localization.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with localization services configured.</returns>
-    public static IServiceCollection AddWebLocalization(this IServiceCollection services,
-        params string[] supportedCultures) =>
+    public static IServiceCollection AddWebLocalization(
+        this IServiceCollection services,
+        params string[] supportedCultures
+    ) =>
         services
             .AddLocalization()
             .AddRequestLocalization(options =>
-                options.SetDefaultCulture(supportedCultures[0])
+                options
+                    .SetDefaultCulture(supportedCultures[0])
                     .AddSupportedCultures(supportedCultures)
                     .AddSupportedUICultures(supportedCultures)
             );
@@ -84,5 +85,6 @@ public static class DependencyInjection
                     var httpContext = context.HttpContext;
                     context.ProblemDetails.Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}";
                     context.ProblemDetails.Extensions.TryAdd("requestId", httpContext.TraceIdentifier);
-                });
+                }
+            );
 }

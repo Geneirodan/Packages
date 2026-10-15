@@ -1,4 +1,5 @@
-﻿using Geneirodan.Abstractions.Repositories;
+﻿using System.Diagnostics.CodeAnalysis;
+using Geneirodan.Abstractions.Repositories;
 using Geneirodan.SampleApi.Domain;
 using Geneirodan.SampleApi.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -12,21 +13,18 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
     private IRepository<DomainEntity, int> _repository;
     private IUnitOfWork _unitOfWork;
 
-    public RepositoryTests(ApiFactory factory) : base(factory)
+    public RepositoryTests(ApiFactory factory)
+        : base(factory) => RefreshScope();
+
+    [MemberNotNull(nameof(_repository))]
+    [MemberNotNull(nameof(_unitOfWork))]
+    private void RefreshScope()
     {
+        Scope.Dispose();
+        Scope = Factory.Services.CreateScope();
+        Context = Scope.ServiceProvider.GetRequiredService<ApplicationContext>();
         _repository = Scope.ServiceProvider.GetRequiredService<IRepository<DomainEntity, int>>();
         _unitOfWork = Scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-    }
-
-    [Fact]
-    public async Task FindAsync_ReturnsMappedEntity_WhenEntityExists()
-    {
-        var entity = await CreateEntity();
-
-        var result = await _repository.FindAsync(entity.Id, TestContext.Current.CancellationToken);
-
-        result.ShouldNotBeNull();
-        result.ShouldBeEquivalentTo(entity);
     }
 
     private async Task<DomainEntity> CreateEntity(int id = 0, string name = "Entity1")
@@ -43,6 +41,17 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
         var entity = await CreateEntity();
         var result = await _repository.ExistsAsync(entity.Id, TestContext.Current.CancellationToken);
         result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task FindAsync_ReturnsMappedEntity_WhenEntityExists()
+    {
+        var entity = await CreateEntity();
+
+        var result = await _repository.FindAsync(entity.Id, TestContext.Current.CancellationToken);
+
+        result.ShouldNotBeNull();
+        result.ShouldBeEquivalentTo(entity);
     }
 
     [Fact]
@@ -65,7 +74,8 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
 
         RefreshScope();
 
-        entity = await Context.Set<DomainEntity>()
+        entity = await Context
+            .Set<DomainEntity>()
             .FirstOrDefaultAsync(x => x.Id.Equals(entity.Id), TestContext.Current.CancellationToken);
         entity.ShouldNotBeNull();
     }
@@ -81,7 +91,8 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
 
         RefreshScope();
 
-        entity = await Context.Set<DomainEntity>()
+        entity = await Context
+            .Set<DomainEntity>()
             .FirstOrDefaultAsync(x => x.Id.Equals(entity.Id), TestContext.Current.CancellationToken);
         entity.ShouldBeNull();
     }
@@ -101,7 +112,8 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
 
         RefreshScope();
 
-        entity = await Context.Set<DomainEntity>()
+        entity = await Context
+            .Set<DomainEntity>()
             .FirstOrDefaultAsync(x => x.Id.Equals(entity.Id), TestContext.Current.CancellationToken);
         entity.ShouldNotBeNull();
         entity.Name.ShouldBe("UpdateEntity");
@@ -121,19 +133,11 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
 
         RefreshScope();
 
-        entity = await Context.Set<DomainEntity>()
+        entity = await Context
+            .Set<DomainEntity>()
             .FirstOrDefaultAsync(x => x.Id.Equals(entity.Id), TestContext.Current.CancellationToken);
         entity.ShouldNotBeNull();
         entity.Name.ShouldBe("NotUpdateEntity");
-    }
-
-    private void RefreshScope()
-    {
-        Scope.Dispose();
-        Scope = Factory.Services.CreateScope();
-        Context = Scope.ServiceProvider.GetRequiredService<ApplicationContext>();
-        _repository = Scope.ServiceProvider.GetRequiredService<IRepository<DomainEntity, int>>();
-        _unitOfWork = Scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
     }
 
     [Fact]
@@ -146,7 +150,8 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
 
         RefreshScope();
 
-        var result = await Context.Set<DomainEntity>()
+        var result = await Context
+            .Set<DomainEntity>()
             .FirstOrDefaultAsync(x => x.Id.Equals(entity.Id), TestContext.Current.CancellationToken);
         result.ShouldBeNull();
     }
@@ -160,7 +165,8 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
 
         RefreshScope();
 
-        var result = await Context.Set<DomainEntity>()
+        var result = await Context
+            .Set<DomainEntity>()
             .FirstOrDefaultAsync(x => x.Id.Equals(entity.Id), TestContext.Current.CancellationToken);
         result.ShouldNotBeNull();
     }
@@ -169,7 +175,7 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
     public async Task Transaction_ShouldSaveChanges_WhenCommited()
     {
         var entity = await CreateEntity();
-        
+
         await using (var transaction = await _unitOfWork.BeginTransactionAsync(TestContext.Current.CancellationToken))
         {
             await _repository.DeleteAsync(entity, TestContext.Current.CancellationToken);
@@ -179,7 +185,8 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
 
         RefreshScope();
 
-        var result = await Context.Set<DomainEntity>()
+        var result = await Context
+            .Set<DomainEntity>()
             .FirstOrDefaultAsync(x => x.Id.Equals(entity.Id), TestContext.Current.CancellationToken);
         result.ShouldBeNull();
     }
@@ -194,17 +201,17 @@ public sealed class RepositoryTests : IntegrationTest, IAsyncDisposable
             await _repository.DeleteAsync(entity, TestContext.Current.CancellationToken);
             await _unitOfWork.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
-        
+
         RefreshScope();
 
-        var result = await Context.Set<DomainEntity>()
+        var result = await Context
+            .Set<DomainEntity>()
             .FirstOrDefaultAsync(x => x.Id.Equals(entity.Id), TestContext.Current.CancellationToken);
         result.ShouldNotBeNull();
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        Context.Set<DomainEntity>().RemoveRange(Context.Set<DomainEntity>());
-        await Context.SaveChangesAsync(TestContext.Current.CancellationToken);
-    }
+    public async ValueTask DisposeAsync() =>
+        await Context.Set<DomainEntity>().ExecuteDeleteAsync(cancellationToken: TestContext.Current.CancellationToken);
+
+    public override void Dispose() => Context.Set<DomainEntity>().ExecuteDelete();
 }

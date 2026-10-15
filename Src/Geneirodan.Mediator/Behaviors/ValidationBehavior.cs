@@ -1,8 +1,7 @@
-﻿using Ardalis.Result;
-using Ardalis.Result.FluentValidation;
+﻿using Ardalis.Result.FluentValidation;
 using FluentValidation;
 
-namespace Geneirodan.MediatR.Behaviors;
+namespace Geneirodan.Mediator.Behaviors;
 
 /// <summary>
 /// A pipeline behavior that performs request validation before passing it to the handler.
@@ -17,25 +16,25 @@ namespace Geneirodan.MediatR.Behaviors;
 /// </typeparam>
 public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+    where TRequest : IMessage
     where TResponse : class, IResult
 {
     /// <inheritdoc />
-    public async Task<TResponse> Handle(
-        TRequest request,
-        RequestHandlerDelegate<TResponse> next,
+    public async ValueTask<TResponse> Handle(
+        TRequest message,
+        MessageHandlerDelegate<TRequest, TResponse> next,
         CancellationToken cancellationToken
     )
     {
         if (!validators.Any())
-            return await next(cancellationToken).ConfigureAwait(false);
+            return await next(message, cancellationToken).ConfigureAwait(false);
 
-        var context = new ValidationContext<TRequest>(request);
+        var context = new ValidationContext<TRequest>(message);
         var validationTasks = validators.Select(v => v.ValidateAsync(context, cancellationToken));
         var validationResults = await Task.WhenAll(validationTasks).ConfigureAwait(false);
 
         if (validationResults.All(x => x.IsValid))
-            return await next(cancellationToken).ConfigureAwait(false);
+            return await next(message, cancellationToken).ConfigureAwait(false);
 
         var errors = validationResults.SelectMany(x => x.AsErrors()).ToArray();
 
