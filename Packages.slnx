@@ -3,6 +3,7 @@
     <Project Path="Sample\Geneirodan.SampleApi\Geneirodan.SampleApi.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
+    <File Path="global.json" />
     <File Path="nuget.config" />
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
