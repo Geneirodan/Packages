@@ -10,13 +10,17 @@ namespace Geneirodan.AspNetCore;
 public class ExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {
     /// <inheritdoc />
-    public virtual async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public virtual async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        Exception exception,
+        CancellationToken cancellationToken
+    )
     {
         var statusCode = exception switch
         {
             InvalidOperationException or ArgumentException => StatusCodes.Status422UnprocessableEntity,
             BadHttpRequestException or FormatException => StatusCodes.Status400BadRequest,
-            _ => StatusCodes.Status500InternalServerError
+            _ => StatusCodes.Status500InternalServerError,
         };
 
         httpContext.Response.StatusCode = statusCode;
@@ -25,11 +29,7 @@ public class ExceptionHandler(IProblemDetailsService problemDetailsService) : IE
         {
             Exception = exception,
             HttpContext = httpContext,
-            ProblemDetails = new ProblemDetails
-            {
-                Status = statusCode,
-                Detail = exception.Message
-            }
+            ProblemDetails = new ProblemDetails { Status = statusCode, Detail = exception.Message },
         };
         return await problemDetailsService.TryWriteAsync(context).ConfigureAwait(false);
     }

@@ -1,11 +1,11 @@
-﻿using Geneirodan.MediatR.Behaviors;
+﻿using Geneirodan.Mediator.Behaviors;
 using Geneirodan.SampleApi.Application.Commands;
 using JetBrains.Annotations;
 using Serilog.Events;
 using Serilog.Sinks.TestCorrelator;
 using Shouldly;
 
-namespace Geneirodan.MediatR.Tests.Behaviors;
+namespace Geneirodan.Mediator.Tests.Behaviors;
 
 [TestSubject(typeof(UnhandledExceptionBehavior<,>))]
 public sealed class UnhandledExceptionBehaviorTests(ApiFactory factory) : PipelineTest(factory)
@@ -17,9 +17,11 @@ public sealed class UnhandledExceptionBehaviorTests(ApiFactory factory) : Pipeli
         {
             var command = new Command(ShouldFail: true);
             await Should.ThrowAsync<Exception>(async () =>
-                await Sender.Send(command, TestContext.Current.CancellationToken));
+                await Sender.Send(command, TestContext.Current.CancellationToken)
+            );
             var events = TestCorrelator.GetLogEventsFromCurrentContext();
-            var entry = events.FirstOrDefault(x => string.Equals(
+            var entry = events.FirstOrDefault(x =>
+                string.Equals(
                     a: x.MessageTemplate.Text,
                     b: "Request: Unhandled Exception for Request {RequestName}",
                     comparisonType: StringComparison.Ordinal

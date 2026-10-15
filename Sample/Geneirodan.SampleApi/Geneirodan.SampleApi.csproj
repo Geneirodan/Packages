@@ -1,24 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Geneirodan.EntityFrameworkCore.Tests" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <InternalsVisibleTo Include="Geneirodan.EntityFrameworkCore.Tests" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Src\Geneirodan.EntityFrameworkCore\Geneirodan.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\Src\Geneirodan.Mediator\Geneirodan.Mediator.csproj" />
+    <ProjectReference Include="..\..\Src\Geneirodan.Observability\Geneirodan.Observability.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\Src\Geneirodan.EntityFrameworkCore\Geneirodan.EntityFrameworkCore.csproj" />
-      <ProjectReference Include="..\..\Src\Geneirodan.MediatR\Geneirodan.MediatR.csproj" />
-      <ProjectReference Include="..\..\Src\Geneirodan.Observability\Geneirodan.Observability.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.10" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+    <PackageReference Include="Mediator.SourceGenerator" Version="3.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.13" />
+  </ItemGroup>
 </Project>

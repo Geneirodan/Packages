@@ -1,7 +1,7 @@
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Geneirodan.MediatR.Tests;
+namespace Geneirodan.Mediator.Tests;
 
 public abstract class PipelineTest : IClassFixture<ApiFactory>, IDisposable
 {

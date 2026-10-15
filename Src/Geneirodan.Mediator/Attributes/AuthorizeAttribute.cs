@@ -1,4 +1,4 @@
-namespace Geneirodan.MediatR.Attributes;
+namespace Geneirodan.Mediator.Attributes;
 
 /// <summary>
 /// Specifies authorization requirements for a class.
@@ -8,7 +8,7 @@ namespace Geneirodan.MediatR.Attributes;
 public sealed class AuthorizeAttribute : Attribute
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AuthorizeAttribute"/> class. 
+    /// Initializes a new instance of the <see cref="AuthorizeAttribute"/> class.
     /// </summary>
     public AuthorizeAttribute() { }
 

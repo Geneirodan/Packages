@@ -1,11 +1,21 @@
 using System.Reflection;
 using FluentValidation;
-using Geneirodan.MediatR;
+using Geneirodan.Mediator.Behaviors;
 using Geneirodan.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMediatRPipeline(Assembly.GetExecutingAssembly());
+builder.Services.AddMediator(options =>
+{
+    options.ServiceLifetime = ServiceLifetime.Scoped;
+    options.PipelineBehaviors =
+    [
+        typeof(AuthorizationBehavior<,>),
+        typeof(LoggingPreProcessor<,>),
+        typeof(UnhandledExceptionBehavior<,>),
+        typeof(ValidationBehavior<,>),
+    ];
+});
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 builder.AddSerilog();
